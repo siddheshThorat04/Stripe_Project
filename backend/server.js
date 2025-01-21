@@ -1,15 +1,16 @@
 import express from "express"
 import dotenv from "dotenv"
- 
+import cookieParser from "cookie-parser"
 
 import authRoutes from "./routes/authRoutes.js"
 import { connectDB } from "./lib/db.js"
 
-dotenv.config()
+dotenv.config();
 
-const app=express()
-const port=process.env.PORT
-
+const app=express();
+const port=process.env.PORT;
+app.use(cookieParser())
+app.use(express.json());
 app.get("/",(req,res)=>{
     res.send("hello")
 })
