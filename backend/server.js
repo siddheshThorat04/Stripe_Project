@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 
 import authRoutes from "./routes/authRoutes.js"
 import productRoutes from "./routes/productRoutes.js"
+import couponRoutes from "./routes/couponRoutes.js"
 import cartRoutes from "./routes/cartRoutes.js"
 import { connectDB } from "./lib/db.js"
 
@@ -19,6 +20,7 @@ app.get("/",(req,res)=>{
 app.use("/api/auth",authRoutes)
 app.use("/api/product",productRoutes)
 app.use("/api/cart",cartRoutes)
+app.use("/api/coupons",couponRoutes)
 
 app.listen(port,()=>{
 
