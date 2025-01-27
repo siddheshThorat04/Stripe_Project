@@ -21,6 +21,7 @@ app.use("/api/auth",authRoutes)
 app.use("/api/product",productRoutes)
 app.use("/api/cart",cartRoutes)
 app.use("/api/coupons",couponRoutes)
+app.use("/api/payment",paymentRoutes)
 
 app.listen(port,()=>{
 
