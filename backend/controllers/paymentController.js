@@ -1,5 +1,6 @@
 import Coupon from "../models/couponModel.js";
 import stripe from "../lib/stripe.js";
+import Order from "../models/order.model.js"; 
 export const creatCheckOutSession = async (req, res) => {
 
     try {
@@ -82,4 +83,34 @@ async function createNewCoupon(userId) {
     })
     await newCoupon.save();
     return newCoupon;
+}
+
+export const checkOutSuccess=async (req,res)=>{
+    try {
+        const {sessionId }=req.body;
+        const session=await stripe.checkout.sessions.retrieve(sessionId);
+        if(session.payment_status==="paid"){
+            if(session.metadata.couponCode){
+                await Coupon.findOneAndUpdate({code:session.metadata.couponCode},{isActive:false}) 
+
+            }
+            const products=JSON.parse(session.metadata.products)
+            const newOrder=new Order({
+                user:session.metadata.userId,
+                products:products.map(product=>({
+                    product:product.id,
+                    quantity:product.quantity,
+                    price:product.price
+
+                })),
+                totalAmout:session.amount_total/100,
+                stripeSessionId:sessionId
+            })
+            await newOrder.save();
+            res.json({message:"Order Placed Successfully",orderId:newOrder._id});
+        }
+    } catch (error) {
+        console.log("Error in checkout success",error.message);
+        res.status(400).json({message:"Server Error",orderId:error.message});
+    }
 }
